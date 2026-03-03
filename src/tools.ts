@@ -3,6 +3,7 @@ import { WalletManager } from './WalletManager';
 import { fromHex, TxSignBuilder, TxSigned, UTxO, utxosToCores } from '@lucid-evolution/lucid';
 import { ADA_HANDLE_POLICY_ID } from './constants';
 import { Delegation } from '@lucid-evolution/core-types';
+import { logger } from './logger';
 
 export default [
     {
@@ -11,36 +12,61 @@ export default [
         inputSchema: {
             cbor: z.string().describe('Cardano un-signed transaction CBOR'),
         },
+        outputSchema: {
+            transactionHash: z.string().describe('Transaction hash for the submitted CBOR'),
+            timestamp: z.number().describe('Millisecond timestamp when the transaction was submitted'),
+        },
         handler: submitTransaction,
     },
     {
         name: 'get_addresses',
         description: 'Retrieve Cardano addresses for the connected wallet.',
         inputSchema: {},
+        outputSchema: {
+            addresses: z.array(z.string()).describe('List of Cardano addresses'),
+        },
         handler: getAddresses,
     },
     {
         name: 'get_utxos',
         description: 'Retrieve all Cardano UTxOs for the connected wallet.',
         inputSchema: {},
+        outputSchema: {
+            utxos: z.array(z.string()).describe('List of Cardano UTxOs in raw format'),
+        },
         handler: getUtxos,
     },
     {
         name: 'get_balances',
         description: 'Retrieve all Cardano balances for the connected wallet.',
         inputSchema: {},
+        outputSchema: {
+            balances: z.array(z.object({
+                name: z.string().describe('Human readable name for the asset'),
+                policyId: z.string().describe('Policy ID for the asset'),
+                nameHex: z.string().describe('Name in hex for the asset'),
+                amount: z.number().describe('Amount of asset in the wallet, denominated in lovelace amount (no decimals)'),
+            })),
+        },
         handler: getBalances,
     },
     {
         name: 'get_adahandles',
         description: 'Retrieve all ADAHandles (https://handle.me/) for the connected wallet.',
         inputSchema: {},
+        outputSchema: {
+            adaHandles: z.array(z.string()).describe('List of Cardano ADAHandles in the connected wallet'),
+        },
         handler: getAdaHandles,
     },
     {
         name: 'get_stake_delegation',
         description: 'Retrieve the staked pool ID & available ADA rewards for the connected wallet.',
         inputSchema: {},
+        outputSchema: {
+            poolId: z.string().describe('Unique pool ID the wallet is staked to'),
+            availableAdaRewards: z.number().describe('Available & claimable ADA staking rewards'),
+        },
         handler: getDelegation,
     },
 ];
@@ -52,16 +78,21 @@ export async function submitTransaction(wallet: WalletManager, cbor: string) {
         const signedTransaction: TxSigned = await signer.complete();
         const transactionHash: string = await signedTransaction.submit();
 
+        const response = {
+            transactionHash: transactionHash,
+            timestamp: (new Date()).valueOf(),
+        }
+
         return {
             content: [{
                 type: 'text',
-                text: JSON.stringify({
-                    transactionHash: transactionHash,
-                    timestamp: (new Date()).valueOf(),
-                }),
-            }]
+                text: JSON.stringify(response),
+            }],
+            structuredContent: response,
         };
     } catch (e) {
+        logger.error(`${e}`);
+
         return {
             content: [{
                 type: 'text',
@@ -78,15 +109,20 @@ export async function getAddresses(wallet: WalletManager) {
             new Set(utxos.map((utxo: UTxO) => utxo.address))
         );
 
+        const response = {
+            addresses: uniqueAddresses,
+        };
+
         return {
             content: [{
                 type: 'text',
-                text: JSON.stringify({
-                    addresses: uniqueAddresses,
-                }),
-            }]
+                text: JSON.stringify(response),
+            }],
+            structuredContent: response,
         };
     } catch (e) {
+        logger.error(`${e}`);
+
         return {
             content: [{
                 type: 'text',
@@ -99,16 +135,20 @@ export async function getAddresses(wallet: WalletManager) {
 export async function getUtxos(wallet: WalletManager) {
     try {
         const utxos: UTxO[] = await wallet.lucid.wallet().getUtxos();
+        const response = {
+            utxos: utxosToCores(utxos).map((utxo) => utxo.to_cbor_hex()),
+        };
 
         return {
             content: [{
                 type: 'text',
-                text: JSON.stringify({
-                    utxos: utxosToCores(utxos),
-                }),
-            }]
+                text: JSON.stringify(response),
+            }],
+            structuredContent: response,
         };
     } catch (e) {
+        logger.error(`${e}`);
+
         return {
             content: [{
                 type: 'text',
@@ -129,22 +169,27 @@ export async function getBalances(wallet: WalletManager) {
             }
         }
 
+        const response = {
+            balances: Object.keys(balances).map((unit: string) => {
+                return {
+                    name: unit === 'lovelace' ? 'ADA' : Buffer.from(fromHex(unit.slice(56))).toString(),
+                    policyId: unit === 'lovelace' ? '' : unit.slice(0, 56),
+                    nameHex: unit === 'lovelace' ? '' : unit.slice(56),
+                    amount: Number(balances[unit]),
+                };
+            })
+        }
+
         return {
             content: [{
                 type: 'text',
-                text: JSON.stringify({
-                    balances: Object.keys(balances).map((unit: string) => {
-                        return {
-                            name: unit === 'lovelace' ? 'ADA' : Buffer.from(fromHex(unit.slice(56))).toString(),
-                            policyId: unit === 'lovelace' ? '' : unit.slice(0, 56),
-                            nameHex: unit === 'lovelace' ? '' : unit.slice(56),
-                            amount: Number(balances[unit]),
-                        };
-                    })
-                }),
+                text: JSON.stringify(response),
             }],
+            structuredContent: response,
         };
     } catch (e) {
+        logger.error(`${e}`);
+
         return {
             content: [{
                 type: 'text',
@@ -170,15 +215,20 @@ export async function getAdaHandles(wallet: WalletManager) {
             );
         }
 
+        const response = {
+            adaHandles: adaHandles,
+        };
+
         return {
             content: [{
                 type: 'text',
-                text: JSON.stringify({
-                    adaHandles: adaHandles,
-                }),
+                text: JSON.stringify(response),
             }],
+            structuredContent: response,
         };
     } catch (e) {
+        logger.error(`${e}`);
+
         return {
             content: [{
                 type: 'text',
@@ -191,17 +241,21 @@ export async function getAdaHandles(wallet: WalletManager) {
 export async function getDelegation(wallet: WalletManager) {
     try {
         const delegation: Delegation = await wallet.lucid.wallet().getDelegation();
+        const response = {
+            poolId: delegation.poolId,
+            availableAdaRewards: Number(delegation.rewards) / 10**6,
+        };
 
         return {
             content: [{
                 type: 'text',
-                text: JSON.stringify({
-                    poolId: delegation.poolId,
-                    availableAdaRewards: Number(delegation.rewards) / 10**6,
-                }),
+                text: JSON.stringify(response),
             }],
+            structuredContent: response,
         };
     } catch (e) {
+        logger.error(`${e}`);
+
         return {
             content: [{
                 type: 'text',

@@ -64,6 +64,7 @@ export class CardanoMcpServer {
                         title: tool.name,
                         description: tool.description,
                         inputSchema: tool.inputSchema,
+                        outputSchema: tool.outputSchema,
                     },
                     async (params: any) => {
                         try {

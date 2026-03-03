@@ -13,16 +13,26 @@ This server exposes wallet-aware tools for:
 - Resolving ADAHandles
 - Checking stake delegation
 
----
-
 ## Secrets
 1. Copy the `.env.example` file to a new file `.env`
 2. Specify your seed-phrase (`SEED_PHRASE`). Your seed-phrase is NEVER exposed to LLMs, and is only used for local wallet connection.
 3. Configure the wallet connection details. Specify a Blockfrost Project ID (https://blockfrost.io/), or a Kupo & Ogmios URL. 
 
----
+## Docker Installation
+Build the container
+```bash
+docker build -t cardano-mcp .
+```
+Run with your secrets
+```bash
+docker run -p 8000:8000 \
+  -e PORT=8000 \
+  -e SEED_PHRASE="lizard,llama,frog..." \
+  -e BLOCKFROST_PROJECT_ID="your_blockfrost_key" \
+  cardano-mcp
+```
 
-## Installation
+## Manual Installation
 Clone this repository
 ```bash
 git clone https://github.com/IndigoProtocol/cardano-mcp.git
@@ -39,6 +49,9 @@ npm run dev
 npm run build
 npm run start
 ```
+
+## Connecting
+The URL for the Cardano MCP server will be hosted at http://localhost:8000/mcp
 
 ## Disclaimer
 By using this Cardano MCP Server, you acknowledge and agree that:

@@ -39,7 +39,7 @@ export default [
     },
     {
         name: 'get_stake_delegation',
-        description: 'Retrieve all ADAHandles (https://handle.me/) for the connected wallet.',
+        description: 'Retrieve the staked pool ID & available ADA rewards for the connected wallet.',
         inputSchema: {},
         handler: getDelegation,
     },

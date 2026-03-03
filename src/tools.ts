@@ -138,7 +138,7 @@ export async function getBalances(wallet: WalletManager) {
                             name: unit === 'lovelace' ? 'ADA' : Buffer.from(fromHex(unit.slice(56))).toString(),
                             policyId: unit === 'lovelace' ? '' : unit.slice(0, 56),
                             nameHex: unit === 'lovelace' ? '' : unit.slice(56),
-                            lovelaceAmount: Number(balances[unit]),
+                            amount: Number(balances[unit]),
                         };
                     })
                 }),

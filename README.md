@@ -54,10 +54,4 @@ npm run start
 The URL for the Cardano MCP server will be hosted at http://localhost:8000/mcp
 
 ## Disclaimer
-By using this Cardano MCP Server, you acknowledge and agree that:
-- You are solely responsible for any transactions executed using this software.
-- You understand the risks associated with blockchain transactions, including irreversible loss of funds.
-- You are responsible for securing your seed phrase, private keys, and environment configuration.
-- You assume full responsibility for any financial loss, smart contract interaction, or transaction failure.
-
- Use at your own risk.
+By using this Cardano MCP Server and all related tools and technology (“MPC”), you acknowledge and agree that (i) your use of decentralized finance, including MPC and/or AI agents that you empower to manage your digital assets, involves various significant financial risks, including but not limited to, the risk of financial loss caused by MPC design or instructions, impermanent loss, and changes in digital asset prices; and (ii) that you are solely responsible for all MPC actions and transactions, and for securing your seed phrase, private keys, and environment configuration.

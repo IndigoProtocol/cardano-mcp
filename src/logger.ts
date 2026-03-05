@@ -3,7 +3,10 @@ import { createLogger, format, transports } from 'winston';
 const logger = createLogger({
     levels: { error: 0, warn: 1, info: 2, debug: 3, verbose: 4 },
     transports: [
-        new transports.Console({ level: process.env.VERBOSE === 'true' ? 'verbose' : 'debug' }),
+        new transports.Console({
+            level: process.env.VERBOSE === 'true' ? 'verbose' : 'debug',
+            stderrLevels: ['error', 'warn', 'info', 'debug', 'verbose'],
+        }),
     ],
     format: format.combine(
         format.colorize(),

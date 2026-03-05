@@ -3,8 +3,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { logger } from './logger';
 import cors from 'cors';
-import tools from './tools';
-import { McpTool } from './types';
+import { registerTools } from './tools';
 import { WalletManager } from './WalletManager';
 
 const NAME: string = 'cardano-mcp';
@@ -13,22 +12,15 @@ const VERSION: string = '1.0.0';
 export class CardanoMcpServer {
 
     protected _app: Express;
-    protected _wallet: WalletManager;
 
     constructor(
+        protected _wallet: WalletManager,
         protected _port: number = 8000,
     ) {
         this._app = express()
-        this._wallet = new WalletManager();
     }
 
     async start() {
-        try {
-            await this._wallet.load();
-        } catch (e) {
-            return logger.error(`${e}`);
-        }
-
         this._app.use(express.json());
         this._app.use(
             cors({
@@ -57,32 +49,7 @@ export class CardanoMcpServer {
                 },
             });
 
-            tools.forEach((tool: McpTool) => {
-                server.registerTool(
-                    tool.name,
-                    {
-                        title: tool.name,
-                        description: tool.description,
-                        inputSchema: tool.inputSchema,
-                        outputSchema: tool.outputSchema,
-                    },
-                    async (params: any) => {
-                        try {
-                            return tool.handler(this._wallet, ...Object.values(params));
-                        } catch (e) {
-                            logger.error(e);
-
-                            return {
-                                content: [{
-                                    type: 'text',
-                                    text: e
-                                }],
-                                isError: true,
-                            }
-                        }
-                    }
-                )
-            });
+            registerTools(server, this._wallet);
 
             const transport: StreamableHTTPServerTransport = new StreamableHTTPServerTransport({
                 sessionIdGenerator: undefined,

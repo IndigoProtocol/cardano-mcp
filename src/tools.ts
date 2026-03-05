@@ -1,11 +1,13 @@
 import { z } from 'zod';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { WalletManager } from './WalletManager';
 import { fromHex, TxSignBuilder, TxSigned, UTxO, utxosToCores } from '@lucid-evolution/lucid';
 import { ADA_HANDLE_POLICY_ID } from './constants';
+import { McpTool } from './types';
 import { Delegation } from '@lucid-evolution/core-types';
 import { logger } from './logger';
 
-export default [
+const tools: McpTool[] = [
     {
         name: 'submit_transaction',
         description: 'Sign and submit a Cardano transaction from the connected wallet.',
@@ -70,6 +72,37 @@ export default [
         handler: getDelegation,
     },
 ];
+
+export default tools;
+
+export function registerTools(server: McpServer, wallet: WalletManager): void {
+    tools.forEach((tool: McpTool) => {
+        server.registerTool(
+            tool.name,
+            {
+                title: tool.name,
+                description: tool.description,
+                inputSchema: tool.inputSchema,
+                outputSchema: tool.outputSchema,
+            },
+            async (params: any) => {
+                try {
+                    return tool.handler(wallet, ...Object.values(params));
+                } catch (e) {
+                    logger.error(`${e}`);
+
+                    return {
+                        content: [{
+                            type: 'text' as const,
+                            text: `${e}`,
+                        }],
+                        isError: true,
+                    };
+                }
+            }
+        );
+    });
+}
 
 export async function submitTransaction(wallet: WalletManager, cbor: string) {
     try {

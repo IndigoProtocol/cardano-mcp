@@ -70,6 +70,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
     }
   }
 }
+```
 
 ## Disclaimer
 By using this Cardano MCP Server and all related tools and technology (“MPC”), you acknowledge and agree that (i) your use of decentralized finance, including MPC and/or AI agents that you empower to manage your digital assets, involves various significant financial risks, including but not limited to, the risk of financial loss caused by MPC design or instructions, impermanent loss, and changes in digital asset prices; and (ii) that you are solely responsible for all MPC actions and transactions, and for securing your seed phrase, private keys, and environment configuration.

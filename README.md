@@ -53,5 +53,23 @@ npm run start
 ## Connecting
 The URL for the Cardano MCP server will be hosted at http://localhost:8000/mcp
 
+### Claude Desktop Configuration
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "cardano": {
+      "command": "node",
+      "args": ["/path/to/cardano-mcp/dist/index.js"],
+      "env": {
+        "SEED_PHRASE": "lizard,llama,frog..."
+        "BLOCKFROST_PROJECT_ID": "mainnet123..."
+      }
+    }
+  }
+}
+
 ## Disclaimer
 By using this Cardano MCP Server and all related tools and technology (“MPC”), you acknowledge and agree that (i) your use of decentralized finance, including MPC and/or AI agents that you empower to manage your digital assets, involves various significant financial risks, including but not limited to, the risk of financial loss caused by MPC design or instructions, impermanent loss, and changes in digital asset prices; and (ii) that you are solely responsible for all MPC actions and transactions, and for securing your seed phrase, private keys, and environment configuration.

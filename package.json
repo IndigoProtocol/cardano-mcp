@@ -8,7 +8,9 @@
     "build": "tsc --project tsconfig.json",
     "dev": "npm run build && npm run start",
     "inspector": "npx @modelcontextprotocol/inspector",
-    "start": "node --no-warnings --experimental-specifier-resolution=node ./dist/index.js"
+    "start": "node --no-warnings --experimental-specifier-resolution=node ./dist/index.js",
+    "smithery:build": "bash scripts/smithery-build.sh",
+    "smithery:publish": "bash scripts/smithery-build.sh && npx smithery mcp publish --name indigoprotocol/cardano-mcp --from-build .smithery/stdio"
   },
   "author": "",
   "license": "MIT",

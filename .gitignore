@@ -3,3 +3,6 @@ dist
 node_modules
 logs/
 .idea
+.smithery/stdio/index.js
+.smithery/stdio/*.wasm
+.smithery/stdio/*.mcpb

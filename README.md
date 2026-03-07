@@ -4,6 +4,7 @@
 <h1 align="center">Cardano MCP Server</h1>
 
 [![smithery badge](https://smithery.ai/badge/indigoprotocol/cardano-mcp)](https://smithery.ai/servers/indigoprotocol/cardano-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/@indigoprotocol/cardano-mcp)](https://www.npmjs.com/package/@indigoprotocol/cardano-mcp)
 
 A **Model Context Protocol (MCP) server** for interacting with the Cardano blockchain from AI agents and automation systems.
 

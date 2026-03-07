@@ -1,5 +1,5 @@
 import { Blockfrost, Kupmios, Lucid } from '@lucid-evolution/lucid';
-import { logger } from './logger';
+import { logger } from './logger.js';
 
 export class WalletManager {
 

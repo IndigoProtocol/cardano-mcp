@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { WalletManager } from './WalletManager';
+import { WalletManager } from './WalletManager.js';
 import { fromHex, TxSignBuilder, TxSigned, UTxO, utxosToCores } from '@lucid-evolution/lucid';
-import { ADA_HANDLE_POLICY_ID } from './constants';
-import { McpTool } from './types';
+import { ADA_HANDLE_POLICY_ID } from './constants.js';
+import { McpTool } from './types.js';
 import { Delegation } from '@lucid-evolution/core-types';
-import { logger } from './logger';
+import { logger } from './logger.js';
 
 const tools: McpTool[] = [
     {

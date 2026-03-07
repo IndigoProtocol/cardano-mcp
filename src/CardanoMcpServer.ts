@@ -1,10 +1,10 @@
 import express, { Express } from 'express';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { logger } from './logger';
+import { logger } from './logger.js';
 import cors from 'cors';
-import { registerTools } from './tools';
-import { WalletManager } from './WalletManager';
+import { registerTools } from './tools.js';
+import { WalletManager } from './WalletManager.js';
 
 const NAME: string = 'cardano-mcp';
 const VERSION: string = '1.0.0';

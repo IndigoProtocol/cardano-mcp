@@ -16,6 +16,10 @@ This server exposes wallet-aware tools for:
 - Resolving ADAHandles
 - Checking stake delegation
 
+<a href="https://glama.ai/mcp/servers/IndigoProtocol/indigo-protocolcardano-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/IndigoProtocol/indigo-protocolcardano-mcp/badge" alt="IndigoProtocol/cardano-mcp MCP server" />
+</a>
+
 ## Secrets
 1. Copy the `.env.example` file to a new file `.env`
 2. Specify your seed-phrase (`SEED_PHRASE`). Your seed-phrase is NEVER exposed to LLMs, and is only used for local wallet connection.
@@ -76,4 +80,4 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```
 
 ## Disclaimer
-By using this Cardano MCP Server and all related tools and technology (“MPC”), you acknowledge and agree that (i) your use of decentralized finance, including MPC and/or AI agents that you empower to manage your digital assets, involves various significant financial risks, including but not limited to, the risk of financial loss caused by MPC design or instructions, impermanent loss, and changes in digital asset prices; and (ii) that you are solely responsible for all MPC actions and transactions, and for securing your seed phrase, private keys, and environment configuration.
+By using this Cardano MCP Server and all related tools and technology ("MPC"), you acknowledge and agree that (i) your use of decentralized finance, including MPC and/or AI agents that you empower to manage your digital assets, involves various significant financial risks, including but not limited to, the risk of financial loss caused by MPC design or instructions, impermanent loss, and changes in digital asset prices; and (ii) that you are solely responsible for all MPC actions and transactions, and for securing your seed phrase, private keys, and environment configuration.

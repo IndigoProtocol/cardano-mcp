@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.indigoprotocol/cardano-mcp",
+  "description": "Cardano blockchain MCP server — submit transactions, fetch addresses, read UTxOs, check balances, resolve ADAHandles, and check stake delegation",
+  "repository": {
+    "url": "https://github.com/IndigoProtocol/cardano-mcp",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@indigoprotocol/cardano-mcp",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

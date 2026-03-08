@@ -12,8 +12,9 @@
     "smithery:build": "bash scripts/smithery-build.sh",
     "smithery:publish": "bash scripts/smithery-build.sh && npx smithery mcp publish --name indigoprotocol/cardano-mcp --from-build .smithery/stdio"
   },
-  "author": "",
+  "author": "Indigo Protocol",
   "license": "MIT",
+  "mcpName": "io.github.indigoprotocol/cardano-mcp",
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.1",

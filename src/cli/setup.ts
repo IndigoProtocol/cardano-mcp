@@ -125,14 +125,20 @@ async function main(): Promise<void> {
       config.mcpServers = {};
     }
 
-    // Add cardano server
+    // Check for existing cardano config
+    const existingServers = config.mcpServers as Record<string, any>;
+    const existingCardano = existingServers['cardano'];
+    const existingSeed = existingCardano?.env?.SEED_PHRASE;
+    const existingBlockfrost = existingCardano?.env?.BLOCKFROST_PROJECT_ID;
+
+    // Add cardano server (preserve existing values if user skipped)
     const serverConfig = { ...CARDANO_SERVER_CONFIG };
     serverConfig.env = {
-      SEED_PHRASE: seedPhrase || 'word1,word2,word3,...',
-      BLOCKFROST_PROJECT_ID: blockfrostKey || 'your-blockfrost-project-id',
+      SEED_PHRASE: seedPhrase || (existingSeed && existingSeed !== 'word1,word2,word3,...' ? existingSeed : 'word1,word2,word3,...'),
+      BLOCKFROST_PROJECT_ID: blockfrostKey || (existingBlockfrost && existingBlockfrost !== 'your-blockfrost-project-id' ? existingBlockfrost : 'your-blockfrost-project-id'),
     };
 
-    (config.mcpServers as Record<string, unknown>)['cardano'] = serverConfig;
+    existingServers['cardano'] = serverConfig;
 
     // Write config
     writeConfig(configPath, config);

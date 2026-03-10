@@ -132,18 +132,6 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-### HTTP Transport (Remote)
-
-The server supports HTTP transport for remote/hosted deployments:
-
-```bash
-PORT=8000 SEED_PHRASE="..." BLOCKFROST_PROJECT_ID="..." npx @indigoprotocol/cardano-mcp
-```
-
-This starts an HTTP server with:
-- `POST /mcp` — MCP endpoint (Streamable HTTP with SSE)
-- `GET /health` — Health check
-
 ## Available Tools
 
 ### Transaction Tools

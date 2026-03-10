@@ -19,6 +19,22 @@ Part of the [Indigo AI Stack](https://github.com/IndigoProtocol) — use alongsi
 
 ## Quick Start
 
+### Automatic Setup (Recommended)
+
+Run the interactive setup to automatically configure your MCP client:
+
+```bash
+npx @indigoprotocol/cardano-mcp setup
+```
+
+This will:
+1. Ask which client you're using (Claude Desktop, Claude Code, Cursor, Windsurf)
+2. Prompt for your Blockfrost Project ID
+3. Prompt for your wallet seed phrase (stored locally, never exposed to LLMs)
+4. Automatically update your config file
+
+### Manual Installation
+
 Install globally:
 
 ```bash

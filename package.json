@@ -1,6 +1,6 @@
 {
   "name": "@indigoprotocol/cardano-mcp",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "description": "Cardano MCP server for handling wallet interactions",
   "main": "dist/src/index.js",

@@ -182,6 +182,42 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
+### OpenClaw
+
+Install Cardano skills for [OpenClaw](https://openclaw.ai):
+
+```bash
+openclaw skills add IndigoProtocol/cardano-skills
+```
+
+Skills are automatically configured — start using Cardano wallet tools immediately.
+
+### Combined with Indigo MCP
+
+For full Cardano DeFi capabilities, use both Cardano MCP and [Indigo MCP](https://github.com/IndigoProtocol/indigo-mcp) together:
+
+```json
+{
+  "mcpServers": {
+    "indigo": {
+      "command": "npx",
+      "args": ["-y", "@indigoprotocol/indigo-mcp"],
+      "env": {
+        "BLOCKFROST_API_KEY": "your-blockfrost-project-id"
+      }
+    },
+    "cardano": {
+      "command": "npx",
+      "args": ["-y", "@indigoprotocol/cardano-mcp"],
+      "env": {
+        "SEED_PHRASE": "word1,word2,word3,...",
+        "BLOCKFROST_PROJECT_ID": "your-blockfrost-project-id"
+      }
+    }
+  }
+}
+```
+
 ## Available Tools
 
 ### Transaction Tools
@@ -300,7 +336,7 @@ Claude will use `get_adahandles` to list all your handle.me handles.
 
 ## Related Projects
 
-- [Indigo MCP](https://github.com/IndigoProtocol/indigo-mcp) — 60+ tools for Indigo Protocol (CDPs, staking, stability pools, DEX)
+- [Indigo MCP](https://github.com/IndigoProtocol/indigo-mcp) — 57 tools for Indigo Protocol (CDPs, staking, stability pools, DEX)
 - [Indigo AI Skills](https://github.com/IndigoProtocol/indigo-ai) — AI agent skills for Indigo workflows
 - [Cardano AI Skills](https://github.com/IndigoProtocol/cardano-ai) — AI agent skills for Cardano operations
 

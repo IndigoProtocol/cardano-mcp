@@ -8,6 +8,18 @@ MCP server for interacting with the **Cardano blockchain** from AI agents and au
 
 Part of the [Indigo AI Stack](https://github.com/IndigoProtocol) — use alongside [Indigo MCP](https://github.com/IndigoProtocol/indigo-mcp) for full Cardano DeFi capabilities.
 
+## ⚡ 2 Commands to Get Started
+
+```bash
+# Install
+npm install -g @indigoprotocol/cardano-mcp
+
+# Setup (interactive)
+npx @indigoprotocol/cardano-mcp setup
+```
+
+That's it — 6 wallet tools configured for Claude Desktop, Claude Code, Cursor, or Windsurf.
+
 ## Features
 
 - Submit signed transactions to the Cardano network

@@ -2,10 +2,70 @@ import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { WalletManager } from './WalletManager.js';
 import { fromHex, TxSignBuilder, TxSigned, UTxO, utxosToCores } from '@lucid-evolution/lucid';
+import * as CML from '@anastasia-labs/cardano-multiplatform-lib-nodejs';
 import { ADA_HANDLE_POLICY_ID } from './constants.js';
 import { McpTool } from './types.js';
 import { Delegation } from '@lucid-evolution/core-types';
 import { logger } from './logger.js';
+
+/**
+ * CIP-20 metadata label for transaction messages.
+ * @see https://cips.cardano.org/cip/CIP-20
+ */
+const CIP20_METADATA_LABEL = 674n;
+
+/**
+ * CIP-20 metadata messages mapped by tool name.
+ */
+const CIP20_MESSAGES: Record<string, string> = {
+    submit_transaction: '[Cardano MCP] - Submit Transaction',
+    get_addresses: '[Cardano MCP] - Get Addresses',
+    get_utxos: '[Cardano MCP] - Get UTXOs',
+    get_balances: '[Cardano MCP] - Get Balance',
+    get_adahandles: '[Cardano MCP] - Get ADAHandles',
+    get_stake_delegation: '[Cardano MCP] - Get Stake Info',
+};
+
+/**
+ * Build a CIP-20 compliant metadata object for a given tool.
+ */
+function buildCip20ResponseMetadata(toolName: string): { '674': { msg: string[] } } | undefined {
+    const message = CIP20_MESSAGES[toolName];
+    if (!message) return undefined;
+    return { '674': { msg: [message] } };
+}
+
+/**
+ * Inject CIP-20 metadata (label 674) into an unsigned transaction CBOR.
+ * Returns the modified CBOR hex string with the metadata attached.
+ */
+function injectCip20Metadata(cbor: string, message: string): string {
+    const tx = CML.Transaction.from_cbor_hex(cbor);
+    const body = tx.body();
+    const witnessSet = tx.witness_set();
+    const isValid = tx.is_valid();
+
+    // Create or extend auxiliary data
+    const auxData = tx.auxiliary_data() ?? CML.AuxiliaryData.new();
+
+    // Build CIP-20 metadata: { msg: ["..."] }
+    const msgList = CML.MetadatumList.new();
+    msgList.add(CML.TransactionMetadatum.new_text(message));
+    const metadatumMap = CML.MetadatumMap.new();
+    metadatumMap.set(
+        CML.TransactionMetadatum.new_text('msg'),
+        CML.TransactionMetadatum.new_list(msgList),
+    );
+
+    const metadata = CML.Metadata.new();
+    metadata.set(CIP20_METADATA_LABEL, CML.TransactionMetadatum.new_map(metadatumMap));
+    auxData.add_metadata(metadata);
+
+    // Update auxiliary data hash in the transaction body
+    body.set_auxiliary_data_hash(CML.hash_auxiliary_data(auxData));
+
+    return CML.Transaction.new(body, witnessSet, isValid, auxData).to_cbor_hex();
+}
 
 const tools: McpTool[] = [
     {
@@ -106,7 +166,8 @@ export function registerTools(server: McpServer, wallet: WalletManager): void {
 
 export async function submitTransaction(wallet: WalletManager, cbor: string) {
     try {
-        const transaction: TxSignBuilder = wallet.lucid.fromTx(cbor)
+        const cborWithMetadata = injectCip20Metadata(cbor, CIP20_MESSAGES['submit_transaction']);
+        const transaction: TxSignBuilder = wallet.lucid.fromTx(cborWithMetadata);
         const signer: TxSignBuilder = await transaction.sign.withWallet()
         const signedTransaction: TxSigned = await signer.complete();
         const transactionHash: string = await signedTransaction.submit();
@@ -144,6 +205,7 @@ export async function getAddresses(wallet: WalletManager) {
 
         const response = {
             addresses: uniqueAddresses,
+            _metadata: buildCip20ResponseMetadata('get_addresses'),
         };
 
         return {
@@ -170,6 +232,7 @@ export async function getUtxos(wallet: WalletManager) {
         const utxos: UTxO[] = await wallet.lucid.wallet().getUtxos();
         const response = {
             utxos: utxosToCores(utxos).map((utxo) => utxo.to_cbor_hex()),
+            _metadata: buildCip20ResponseMetadata('get_utxos'),
         };
 
         return {
@@ -210,7 +273,8 @@ export async function getBalances(wallet: WalletManager) {
                     nameHex: unit === 'lovelace' ? '' : unit.slice(56),
                     amount: Number(balances[unit]),
                 };
-            })
+            }),
+            _metadata: buildCip20ResponseMetadata('get_balances'),
         }
 
         return {
@@ -250,6 +314,7 @@ export async function getAdaHandles(wallet: WalletManager) {
 
         const response = {
             adaHandles: adaHandles,
+            _metadata: buildCip20ResponseMetadata('get_adahandles'),
         };
 
         return {
@@ -277,6 +342,7 @@ export async function getDelegation(wallet: WalletManager) {
         const response = {
             poolId: delegation.poolId,
             availableAdaRewards: Number(delegation.rewards) / 10**6,
+            _metadata: buildCip20ResponseMetadata('get_stake_delegation'),
         };
 
         return {

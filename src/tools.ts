@@ -182,7 +182,6 @@ export async function submitTransaction(wallet: WalletManager, cbor: string) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -213,7 +212,6 @@ export async function getAddresses(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -240,7 +238,6 @@ export async function getUtxos(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -282,7 +279,6 @@ export async function getBalances(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -322,7 +318,6 @@ export async function getAdaHandles(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -350,7 +345,6 @@ export async function getDelegation(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
         };
     } catch (e) {
         logger.error(`${e}`);

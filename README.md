@@ -326,6 +326,48 @@ Claude will use `get_stake_delegation` to show your staked pool and claimable re
 
 Claude will use `get_adahandles` to list all your handle.me handles.
 
+## Troubleshooting
+
+### nvm Users (macOS/Linux)
+
+If you use nvm and Claude Desktop shows "server disconnected", you need to use full paths since Claude Desktop doesn't inherit your shell's nvm setup:
+
+```json
+{
+  "mcpServers": {
+    "cardano": {
+      "command": "/Users/YOU/.nvm/versions/node/v22.x.x/bin/npx",
+      "args": ["-y", "@indigoprotocol/cardano-mcp"],
+      "env": {
+        "PATH": "/Users/YOU/.nvm/versions/node/v22.x.x/bin:/usr/local/bin:/usr/bin:/bin",
+        "SEED_PHRASE": "word1,word2,...",
+        "BLOCKFROST_PROJECT_ID": "mainnetXXX"
+      }
+    }
+  }
+}
+```
+
+Find your node path with: `which npx`
+
+### Cache Issues
+
+If tools fail after an update, clear the npm cache:
+
+```bash
+rm -rf ~/.npm/_npx
+```
+
+Then restart Claude Desktop.
+
+## Platform Support
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| macOS | ✅ Full support | Intel & Apple Silicon |
+| Windows | ✅ Full support | Windows 10/11 |
+| Linux | ✅ Full support | x64 & ARM64 |
+
 ## Security
 
 ⚠️ **Important:** Your seed phrase is stored locally and used only for wallet operations. It is **never** exposed to LLMs or external services.

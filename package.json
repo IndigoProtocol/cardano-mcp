@@ -1,38 +1,47 @@
 {
   "name": "@indigoprotocol/cardano-mcp",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "description": "Cardano MCP server for handling wallet interactions",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "bin": {
-    "cardano-mcp": "dist/index.js",
-    "cardano-mcp-setup": "dist/cli/setup.js"
+    "cardano-mcp": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "dist/*.wasm"
+  ],
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "bash scripts/build.sh",
+    "build:tsc": "tsc --project tsconfig.json",
     "dev": "npm run build && npm run start",
     "inspector": "npx @modelcontextprotocol/inspector",
-    "start": "node --no-warnings --experimental-specifier-resolution=node ./dist/index.js",
+    "start": "node --no-warnings ./dist/index.js",
     "smithery:build": "bash scripts/smithery-build.sh",
     "smithery:publish": "bash scripts/smithery-build.sh && npx smithery mcp publish --name indigoprotocol/cardano-mcp --from-build .smithery/stdio"
   },
   "author": "Indigo Protocol",
   "license": "MIT",
   "mcpName": "io.github.IndigoProtocol/cardano-mcp",
-  "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.3.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+  "engines": {
+    "node": ">=18"
   },
-  "dependencies": {
+  "devDependencies": {
     "@lucid-evolution/lucid": "^0.4.29",
     "@modelcontextprotocol/sdk": "^1.18.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.1",
     "axios": "^1.12.2",
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",
+    "esbuild": "^0.27.4",
     "express": "^5.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
     "winston-syslog": "^2.7.1",
     "zod": "^3.25.76"
+  },
+  "dependencies": {
+    "undici": "^7.0.0"
   }
 }

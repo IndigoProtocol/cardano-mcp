@@ -203,8 +203,9 @@ export async function getAddresses(wallet: WalletManager) {
             new Set(utxos.map((utxo: UTxO) => utxo.address))
         );
 
+        const structuredResponse = { addresses: uniqueAddresses };
         const response = {
-            addresses: uniqueAddresses,
+            ...structuredResponse,
             _metadata: buildCip20ResponseMetadata('get_addresses'),
         };
 
@@ -213,7 +214,7 @@ export async function getAddresses(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
+            structuredContent: structuredResponse,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -230,8 +231,9 @@ export async function getAddresses(wallet: WalletManager) {
 export async function getUtxos(wallet: WalletManager) {
     try {
         const utxos: UTxO[] = await wallet.lucid.wallet().getUtxos();
+        const structuredResponse = { utxos: utxosToCores(utxos).map((utxo) => utxo.to_cbor_hex()) };
         const response = {
-            utxos: utxosToCores(utxos).map((utxo) => utxo.to_cbor_hex()),
+            ...structuredResponse,
             _metadata: buildCip20ResponseMetadata('get_utxos'),
         };
 
@@ -240,7 +242,7 @@ export async function getUtxos(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
+            structuredContent: structuredResponse,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -265,7 +267,7 @@ export async function getBalances(wallet: WalletManager) {
             }
         }
 
-        const response = {
+        const structuredResponse = {
             balances: Object.keys(balances).map((unit: string) => {
                 return {
                     name: unit === 'lovelace' ? 'ADA' : Buffer.from(fromHex(unit.slice(56))).toString(),
@@ -274,15 +276,18 @@ export async function getBalances(wallet: WalletManager) {
                     amount: Number(balances[unit]),
                 };
             }),
+        };
+        const response = {
+            ...structuredResponse,
             _metadata: buildCip20ResponseMetadata('get_balances'),
-        }
+        };
 
         return {
             content: [{
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
+            structuredContent: structuredResponse,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -312,8 +317,9 @@ export async function getAdaHandles(wallet: WalletManager) {
             );
         }
 
+        const structuredResponse = { adaHandles: adaHandles };
         const response = {
-            adaHandles: adaHandles,
+            ...structuredResponse,
             _metadata: buildCip20ResponseMetadata('get_adahandles'),
         };
 
@@ -322,7 +328,7 @@ export async function getAdaHandles(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
+            structuredContent: structuredResponse,
         };
     } catch (e) {
         logger.error(`${e}`);
@@ -339,9 +345,12 @@ export async function getAdaHandles(wallet: WalletManager) {
 export async function getDelegation(wallet: WalletManager) {
     try {
         const delegation: Delegation = await wallet.lucid.wallet().getDelegation();
-        const response = {
+        const structuredResponse = {
             poolId: delegation.poolId,
             availableAdaRewards: Number(delegation.rewards) / 10**6,
+        };
+        const response = {
+            ...structuredResponse,
             _metadata: buildCip20ResponseMetadata('get_stake_delegation'),
         };
 
@@ -350,7 +359,7 @@ export async function getDelegation(wallet: WalletManager) {
                 type: 'text',
                 text: JSON.stringify(response),
             }],
-            structuredContent: response,
+            structuredContent: structuredResponse,
         };
     } catch (e) {
         logger.error(`${e}`);

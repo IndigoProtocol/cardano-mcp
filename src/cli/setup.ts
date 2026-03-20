@@ -28,14 +28,50 @@ const CONFIG_PATHS: Record<string, Record<string, string>> = {
   },
 };
 
-const CARDANO_SERVER_CONFIG = {
-  command: 'npx',
-  args: ['-y', '@indigoprotocol/cardano-mcp'],
-  env: {
-    SEED_PHRASE: '',
-    BLOCKFROST_PROJECT_ID: '',
-  },
-};
+function detectNvmPath(): { command: string; pathEnv?: string } | null {
+  // Check if running under nvm (process.execPath will be in .nvm directory)
+  const execPath = process.execPath;
+  if (execPath.includes('.nvm/versions/node')) {
+    const nodeDir = path.dirname(execPath);
+    const npxPath = path.join(nodeDir, 'npx');
+    if (fs.existsSync(npxPath)) {
+      return {
+        command: npxPath,
+        pathEnv: `${nodeDir}:/usr/local/bin:/usr/bin:/bin`,
+      };
+    }
+  }
+  return null;
+}
+
+function getServerConfig(): { command: string; args: string[]; env: Record<string, string> } {
+  const nvmPath = detectNvmPath();
+  const platform = process.platform;
+  
+  // On Windows, always use plain npx (nvm-windows works differently)
+  if (platform === 'win32' || !nvmPath) {
+    return {
+      command: 'npx',
+      args: ['-y', '@indigoprotocol/cardano-mcp'],
+      env: {
+        SEED_PHRASE: '',
+        BLOCKFROST_PROJECT_ID: '',
+      },
+    };
+  }
+  
+  // nvm user on macOS/Linux - use full paths
+  console.log(`\n🔍 Detected nvm installation: ${nvmPath.command}`);
+  return {
+    command: nvmPath.command,
+    args: ['-y', '@indigoprotocol/cardano-mcp'],
+    env: {
+      PATH: nvmPath.pathEnv!,
+      SEED_PHRASE: '',
+      BLOCKFROST_PROJECT_ID: '',
+    },
+  };
+}
 
 function createReadlineInterface(): readline.Interface {
   return readline.createInterface({
@@ -154,8 +190,9 @@ async function main(): Promise<void> {
     const existingBlockfrost = existingCardano?.env?.BLOCKFROST_PROJECT_ID;
 
     // Add cardano server (preserve existing values if user skipped)
-    const serverConfig = { ...CARDANO_SERVER_CONFIG };
+    const serverConfig = getServerConfig();
     serverConfig.env = {
+      ...serverConfig.env,
       SEED_PHRASE: seedPhrase || (existingSeed && existingSeed !== 'word1,word2,word3,...' ? existingSeed : 'word1,word2,word3,...'),
       BLOCKFROST_PROJECT_ID: blockfrostKey || (existingBlockfrost && existingBlockfrost !== 'your-blockfrost-project-id' ? existingBlockfrost : 'your-blockfrost-project-id'),
     };

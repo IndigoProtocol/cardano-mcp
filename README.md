@@ -51,6 +51,10 @@ That's it — 6 wallet tools configured for Claude Desktop, Claude Code, Cursor,
 - Check stake delegation and claimable rewards
 - Wallet-aware tools powered by Lucid Evolution
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/indigoprotocol-cardano-mcp).
+
 ## Quick Start
 
 ### Automatic Setup (Recommended)

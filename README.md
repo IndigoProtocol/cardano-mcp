@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/indigoprotocol-cardano-mcp-badge.png)](https://mseep.ai/app/indigoprotocol-cardano-mcp)
+
 # Cardano MCP Server
 
 [![Smithery](https://smithery.ai/badge/@indigoprotocol/cardano-mcp)](https://smithery.ai/server/@indigoprotocol/cardano-mcp)

@@ -24,7 +24,7 @@
   "license": "MIT",
   "mcpName": "io.github.IndigoProtocol/cardano-mcp",
   "engines": {
-    "node": ">=18"
+    "node": ">=22.23.4"
   },
   "devDependencies": {
     "@lucid-evolution/lucid": "^0.4.29",

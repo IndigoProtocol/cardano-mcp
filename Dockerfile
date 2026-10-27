@@ -1,4 +1,4 @@
-FROM node:18.19 AS build
+FROM node:22.23.4 AS build
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:18.19-slim
+FROM node:22.23.4-slim
 
 WORKDIR /app
 
@@ -21,4 +21,4 @@ RUN npm install --omit=dev
 
 EXPOSE 8000
 
-CMD ["node", "--no-warnings", "--experimental-specifier-resolution=node", "dist/index.js"]
+CMD ["node", "--no-warnings", "dist/index.js"]
